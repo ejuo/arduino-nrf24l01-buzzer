@@ -1,7 +1,7 @@
 ## Game Show Buzzer System
 Wireless Arduino Nano / NRF24l01 Buzzer system with Game-Master to reset the buzzer states. Only one Buzzer can "win". Each Buzzer trigger can have it's own audio playback.
 
-[![Demonstration Video](https://img.youtube.com/vi/Z5ptBCR-Z2o/0.jpg)](https://youtu.be/Z5ptBCR-Z2o "Arduino Buzzer Game Show (Кнопки для викторины)")
+[![Demonstration Video](https://img.youtube.com/vi/Z5ptBCR-Z2o/0.jpg)](https://youtu.be/Z5ptBCR-Z2o "Arduino Buzzer Game Show (РљРЅРѕРїРєРё РґР»СЏ РІРёРєС‚РѕСЂРёРЅС‹)")
 
 *click the image to play the demo video of the buzzer system*
 
