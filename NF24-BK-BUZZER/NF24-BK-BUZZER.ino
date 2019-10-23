@@ -2,16 +2,14 @@
 #include "nRF24L01.h"
 #include "RF24.h"
 #include "printf.h"
-#include "../../NF24-BK/NF24BK.h"
-
-#include <Wire.h>
+#include "D:/1/arduino-nrf24l01-buzzer-master/NF24-BK/NF24BK.h" // change path! Relative path not works in Win.
 
 RF24 radio(9, 10);
 
 #define BUTTON_PIN 5
 #define LIGHT_PIN 4
 
-byte buzzerId = 1; // id of the buzzer, can be anything from 0-255
+byte buzzerId = 9; // id of the buzzer, can be anything from 0-255
 
 void setup() {
   Serial.begin(57600);
@@ -20,6 +18,8 @@ void setup() {
   printf("*** SWITCH (%2d) ***\n\r",buzzerId);
 
   initRadio(radio);
+  radio.setPALevel(RF24_PA_LOW);		  // Set power level for stable connecting
+  radio.setPayloadSize(4);                
   setPipes(radio, pipes[0], pipes[1]);
 
   pinMode(LIGHT_PIN, OUTPUT);

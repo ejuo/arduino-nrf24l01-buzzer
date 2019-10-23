@@ -2,28 +2,46 @@
 #include "nRF24L01.h"
 #include "RF24.h"
 #include "printf.h"
-#include "../../NF24-BK/NF24BK.h"
-#include <Wire.h>
+#include "D:/1/arduino-nrf24l01-buzzer-master/NF24-BK/NF24BK.h" // change path! Relative path not works in Win.
+
+#include "Arduino.h"
+#include "SoftwareSerial.h"
+#include "DFRobotDFPlayerMini.h"
+
+SoftwareSerial mySoftwareSerial(3, 2); // RX, TX
+DFRobotDFPlayerMini myDFPlayer;
 
 RF24 radio(9, 10);
 
 #define CLEAR_BTN_PIN 5
 
-byte buzzerIds[] = {1,2}; // list all your existing buzzers client ids (see buzzerId in NF24-BK-BUZZER.ino)
+byte buzzerIds[] = {1,2, 3, 4, 5, 6, 7, 8, 9}; // list all your existing buzzers client ids (see buzzerId in NF24-BK-BUZZER.ino)
 
 void setup() {
+  mySoftwareSerial.begin(9600);
+  if (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
+    Serial.println(F("Unable to begin:"));
+    Serial.println(F("1.Please recheck the connection!"));
+    Serial.println(F("2.Please insert the SD card!"));
+    while(true){
+      delay(0); // Code to compatible with ESP8266 watch dog.
+    }
+  }
+  myDFPlayer.volume(30);
+  Serial.println(F("DFPlayer Mini online."));
+  
   Serial.begin(57600);
 
   printf_begin();
   printf("*** MASTER ***\n\r");
 
   initRadio(radio);
+  radio.setPALevel(RF24_PA_LOW);			// Set power level for stable connecting (RF24_PA_MIN, RF24_PA_LOW, RF24_PA_HIGH, RF24_PA_MAX)
+  radio.setPayloadSize(4);               
   setPipes(radio, pipes[1], pipes[0]);
   radio.startListening();
 
   pinMode(CLEAR_BTN_PIN, INPUT_PULLUP);
-
-  Wire.begin();
 }
 
 long lastPress = 0;
@@ -36,6 +54,8 @@ void loop(void) {
 
     currentBuzzer = 0;
 
+    myDFPlayer.pause();
+    
     radio.stopListening();
     int i;
     for (i = 0; i < sizeof(buzzerIds); i++) {
@@ -96,9 +116,7 @@ boolean sendCmd(byte pipeNo, byte sw, byte cmd) {
 }
 
 void sendSound(int team) {
-  Wire.beginTransmission(9);
-  Wire.write(team);
-  Wire.endTransmission();
-  Serial.println("Send Sound CMD");
+  Serial.println("Playing Sound");
+  myDFPlayer.play(team);
 }
 
